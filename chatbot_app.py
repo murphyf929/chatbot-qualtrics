@@ -63,8 +63,13 @@ def chat():
         except sqlite3.Error as e:
             print("SQLite Error:", str(e))
             return jsonify({"error": "Database error: " + str(e)}), 500
-        return jsonify({"response": "Session ended", "completion_code": 
-str(uuid4())[:8]})
+        
+        redirect_url = f"https://your.qualtrics.com/jfe/form/SV_XXXXXX?PROLIFIC_PID={prolific_pid}"  # ← 替换成你的问卷后续页面
+        return jsonify({
+            "response": "Session ended",
+            "completion_code": str(uuid4())[:8],
+            "redirect_url": redirect_url
+        })
 
     try:
         response = client.chat.completions.create(
