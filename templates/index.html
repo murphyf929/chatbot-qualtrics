@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GPT Chatbot</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body { font-family: Arial; margin: 20px; max-width: 800px; }
+        #chat-container { border: 1px solid #ccc; padding: 10px; height: 
+400px; overflow-y: scroll; }
+        #userInput { width: 100%; height: 80px; margin-top: 10px; }
+        #completionCode { margin-top: 10px; color: green; }
+    </style>
+</head>
+<body>
+    <h2>Chatbot Interaction</h2>
+    <p>You have 10 minutes to interact. Click "End Session" when done.</p>
+    <div id="chat-container"></div>
+    <textarea id="userInput" placeholder="Type your 
+message..."></textarea><br>
+    <button onclick="sendMessage()">Send</button>
+    <button onclick="endSession()">End Session</button>
+    <div id="completionCode"></div>
+    <p><a href="YOUR_QUALTRICS_SURVEY_URL">Return to Survey</a></p>
+    <script>
+        function getQueryParam(name) {
+            return new URLSearchParams(window.location.search).get(name);
+        }
+        function sendMessage() {
+            const input = $("#userInput").val();
+            const prolific_pid = getQueryParam("PROLIFIC_PID");
+            if (!input) {
+                alert("Please enter a message.");
+                return;
+            }
+            $.post("/chat", { input: input, PROLIFIC_PID: prolific_pid }, 
+function(data) {
+                $("#chat-container").append("<p><b>You:</b> " + input + 
+"</p>");
+                $("#chat-container").append("<p><b>Bot:</b> " + 
+data.response + "</p>");
+                $("#userInput").val("");
+                
+$("#chat-container").scrollTop($("#chat-container")[0].scrollHeight);
+            });
+        }
+        function endSession() {
+            const prolific_pid = getQueryParam("PROLIFIC_PID");
+            $.post("/chat", { end_session: true, PROLIFIC_PID: 
+prolific_pid }, function(data) {
+                $("#completionCode").html("<p><b>Completion Code:</b> " + 
+data.completion_code + "</p>");
+            });
+        }
+    </script>
+</body>
+</html>
+
