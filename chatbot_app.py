@@ -6,7 +6,8 @@ from uuid import uuid4
 from datetime import datetime
 import os
 
-app = Flask(__name__)
+basedir = os.path.abspath(os.path.dirname(__file__))
+app = Flask(__name__, template_folder=os.path.join(basedir, "templates"))
 #openai.api_key = "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"  
 
 client = OpenAI(
